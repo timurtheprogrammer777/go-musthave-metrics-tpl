@@ -43,10 +43,7 @@ func UpdateHandler(storage *storage.MemStorage) http.HandlerFunc {
 			http.Error(w, "Invalid metric type", http.StatusBadRequest)
 			return
 		}
-
+		fmt.Printf("Received metric: Type=%s, Name=%s, Value=%s\n", metricType, name, valueStr)
 		w.WriteHeader(http.StatusOK)
-		//fmt.Fprintf(w, "Metric %s updated\n", name)
-		fmt.Fprintf(w, "Metric %s updated\n", name)
-
 	}
 }
