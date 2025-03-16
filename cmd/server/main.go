@@ -11,9 +11,9 @@ import (
 
 func main() {
 
-	storage := storage.NewMemStorage()
+	memStorage := storage.NewMemStorage()
 
-	http.HandleFunc("/update/", handlers.UpdateHandler(storage))
+	http.HandleFunc("/update/", handlers.UpdateHandler(memStorage))
 
 	fmt.Println("Starting server on port :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
