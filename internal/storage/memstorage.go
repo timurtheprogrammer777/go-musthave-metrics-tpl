@@ -25,3 +25,24 @@ func (s *MemStorage) UpdateCounter(name string, value int64) {
 	s.Counters[name] += value
 	fmt.Println(s.Counters)
 }
+
+func (s *MemStorage) GetAllGauges() map[string]float64 {
+	return s.Gauges
+}
+
+func (s *MemStorage) GetAllCounters() map[string]int64 {
+	return s.Counters
+}
+
+func (s *MemStorage) GetAllMetrics() map[string]interface{} {
+	metrics := make(map[string]interface{})
+
+	for name, value := range s.Gauges {
+		metrics[name] = value
+	}
+
+	for name, value := range s.Counters {
+		metrics[name] = value
+	}
+	return metrics
+}

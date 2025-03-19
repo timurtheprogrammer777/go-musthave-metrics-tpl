@@ -1,30 +1,21 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"go-musthave-metrics-tpl/internal/storage"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func UpdateHandler(storage *storage.MemStorage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
-			return
-		}
-
-		path := strings.TrimPrefix(r.URL.Path, "/update/")
-		parts := strings.Split(path, "/")
-
-		if len(parts) != 3 {
-			http.Error(w, "Invalid URL format", http.StatusNotFound)
-			return
-		}
-
-		metricType, name, valueStr := parts[0], parts[1], parts[2]
+		metricType := chi.URLParam(r, "metricType")
+		name := chi.URLParam(r, "name")
+		valueStr := chi.URLParam(r, "value")
 
 		switch metricType {
 		case "gauge":
@@ -49,7 +40,19 @@ func UpdateHandler(storage *storage.MemStorage) http.HandlerFunc {
 		}
 
 		log.Printf("Received metric: Type=%s, Name=%s, Value=%s\n", metricType, name, valueStr)
-		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func UpdateMainPage(storage *storage.MemStorage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		metrics := storage.GetAllMetrics()
+		w.Header().Set("Content-Type", "text/html")
+
+		fmt.Fprintf(w, "<html><body><h1>Metrics</h1><ul>")
+		for name, value := range metrics {
+			fmt.Fprintf(w, "<li>%s: %v</li>", name, value)
+		}
+		fmt.Fprintf(w, "</ul></body></html>")
 	}
 }
