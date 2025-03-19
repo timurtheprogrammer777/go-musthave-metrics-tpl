@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"fmt"
-	"go-musthave-metrics-tpl/internal/storage"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"go-musthave-metrics-tpl/internal/storage"
 )
 
 func UpdateHandler(storage *storage.MemStorage) http.HandlerFunc {
@@ -15,7 +16,8 @@ func UpdateHandler(storage *storage.MemStorage) http.HandlerFunc {
 			return
 		}
 
-		parts := strings.Split(strings.TrimPrefix(r.URL.Path, "/update/"), "/")
+		path := strings.TrimPrefix(r.URL.Path, "/update/")
+		parts := strings.Split(path, "/")
 
 		if len(parts) != 3 {
 			http.Error(w, "Invalid URL format", http.StatusNotFound)
@@ -32,18 +34,22 @@ func UpdateHandler(storage *storage.MemStorage) http.HandlerFunc {
 				return
 			}
 			storage.UpdateGauge(name, value)
+
 		case "counter":
-			value, err := strconv.ParseFloat(valueStr, 64)
+			value, err := strconv.ParseInt(valueStr, 10, 64)
 			if err != nil {
 				http.Error(w, "Invalid counter value", http.StatusBadRequest)
 				return
 			}
-			storage.UpdateCounter(name, int64(value))
+			storage.UpdateCounter(name, value)
+
 		default:
 			http.Error(w, "Invalid metric type", http.StatusBadRequest)
 			return
 		}
-		fmt.Printf("Received metric: Type=%s, Name=%s, Value=%s\n", metricType, name, valueStr)
+
+		log.Printf("Received metric: Type=%s, Name=%s, Value=%s\n", metricType, name, valueStr)
+		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusOK)
 	}
 }
