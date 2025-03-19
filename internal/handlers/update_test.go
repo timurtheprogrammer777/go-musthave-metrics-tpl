@@ -2,7 +2,6 @@ package handlers_test
 
 import (
 	"bytes"
-	"fmt"
 	"go-musthave-metrics-tpl/internal/handlers"
 	"go-musthave-metrics-tpl/internal/storage"
 	"net/http"
@@ -10,18 +9,16 @@ import (
 	"testing"
 )
 
-type UpdateTest []struct {
-	name         string
-	method       string
-	url          string
-	expectedCode int
-}
-
 func TestUpdateHandler(t *testing.T) {
 	memStorage := storage.NewMemStorage()
 	handler := handlers.UpdateHandler(memStorage)
 
-	tests := UpdateTest{
+	tests := []struct {
+		name         string
+		method       string
+		url          string
+		expectedCode int
+	}{
 		{"Valid Gauge", "POST", "/update/gauge/testMetric/42.5", http.StatusOK},
 		{"Valid Counter", "POST", "/update/counter/testCounter/10", http.StatusOK},
 		{"Invalid Method", "GET", "/update/gauge/testMetric/42.5", http.StatusMethodNotAllowed},
@@ -43,5 +40,30 @@ func TestUpdateHandler(t *testing.T) {
 			}
 		})
 	}
-	fmt.Println("Handlers updating tests are ok!")
+}
+
+func TestUpdateMainPage(t *testing.T) {
+	memStorage := storage.NewMemStorage()
+
+	// Добавляем метрики в хранилище
+	memStorage.UpdateGauge("testMetric", 42.5)
+	memStorage.UpdateCounter("testCounter", 10)
+
+	// Тестируем страницу с метриками
+	t.Run("Get all metrics", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/", nil)
+		rec := httptest.NewRecorder()
+
+		handler := handlers.UpdateMainPage(memStorage)
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Errorf("Expected status %d, got %d", http.StatusOK, rec.Code)
+		}
+
+		expectedResponse := "<html><body><h1>Metrics</h1><ul><li>testMetric: 42.5</li><li>testCounter: 10</li></ul></body></html>"
+		if rec.Body.String() != expectedResponse {
+			t.Errorf("Expected response body to be '%s', got '%s'", expectedResponse, rec.Body.String())
+		}
+	})
 }
