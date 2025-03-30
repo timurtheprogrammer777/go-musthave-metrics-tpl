@@ -22,13 +22,13 @@ func TestUpdateHandler(t *testing.T) {
 	handler := handlers.UpdateHandler(memStorage)
 
 	tests := UpdateTest{
-		{"Valid Gauge", "POST", "/update/gauge/testMetric/42.5", http.StatusOK},
-		{"Valid Counter", "POST", "/update/counter/testCounter/10", http.StatusOK},
-		{"Invalid Method", "GET", "/update/gauge/testMetric/42.5", http.StatusMethodNotAllowed},
-		{"Invalid URL Format", "POST", "/update/gauge/testMetric", http.StatusNotFound},
-		{"Invalid Gauge Value", "POST", "/update/gauge/testMetric/abc", http.StatusBadRequest},
-		{"Invalid Counter Value", "POST", "/update/counter/testCounter/xyz", http.StatusBadRequest},
-		{"Invalid Metric Type", "POST", "/update/unknown/testMetric/42", http.StatusBadRequest},
+		{"Valid Gauge", "POST", "/value/gauge/testMetric/42.5", http.StatusOK},
+		{"Valid Counter", "POST", "/value/counter/testCounter/10", http.StatusOK},
+		{"Invalid Method", "GET", "/value/gauge/testMetric/42.5", http.StatusMethodNotAllowed},
+		{"Invalid URL Format", "POST", "/value/gauge/testMetric", http.StatusNotFound},
+		{"Invalid Gauge Value", "POST", "/value/gauge/testMetric/abc", http.StatusBadRequest},
+		{"Invalid Counter Value", "POST", "/value/counter/testCounter/xyz", http.StatusBadRequest},
+		{"Invalid Metric Type", "POST", "/value/unknown/testMetric/42", http.StatusBadRequest},
 	}
 
 	for _, tt := range tests {

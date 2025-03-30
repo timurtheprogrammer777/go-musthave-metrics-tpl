@@ -18,10 +18,12 @@ func NewMemStorage() *MemStorage {
 
 func (s *MemStorage) UpdateGauge(name string, value float64) {
 	s.Gauges[name] = value
-	fmt.Println(s.Gauges)
+	fmt.Println(1, s.Gauges)
+	fmt.Println(2, s.Gauges[name])
 }
 
 func (s *MemStorage) UpdateCounter(name string, value int64) {
 	s.Counters[name] += value
-	fmt.Println(s.Counters)
+	fmt.Println(3, s.Counters)
+	fmt.Println(4, s.Counters[name])
 }

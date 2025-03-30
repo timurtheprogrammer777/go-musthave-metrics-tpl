@@ -1,12 +1,13 @@
-package runtime
+package executetime_test
 
 import (
 	"fmt"
+	"go-musthave-metrics-tpl/internal/executetime"
 	"testing"
 )
 
 func TestMetricsRuntime_Collect(t *testing.T) {
-	rm := NewRuntimeMetrics()
+	rm := executetime.NewRuntimeMetrics()
 
 	if rm.PollCount != 0 {
 		t.Errorf("Expected PollCount to be 0, got %d", rm.PollCount)

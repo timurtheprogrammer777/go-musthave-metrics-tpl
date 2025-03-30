@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"go-musthave-metrics-tpl/internal/runtime"
+	"go-musthave-metrics-tpl/internal/executetime"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,7 +13,7 @@ import (
 const serverAddress = "http://localhost:8080"
 
 func main() {
-	metrics := runtime.NewRuntimeMetrics()
+	metrics := executetime.NewRuntimeMetrics()
 
 	tickerPoll := time.NewTicker(2 * time.Second)
 	tickerReport := time.NewTicker(10 * time.Second)
@@ -29,7 +29,7 @@ func main() {
 }
 
 // sendMetrics отправляет метрики на сервер
-func sendMetrics(metrics *runtime.MetricsRuntime) {
+func sendMetrics(metrics *executetime.MetricsRuntime) {
 	client := &http.Client{}
 
 	// Отправляем PollCount
