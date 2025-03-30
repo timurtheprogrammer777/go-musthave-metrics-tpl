@@ -12,7 +12,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-const PORT = ":7080"
+const PORT = ":8080"
 
 func main() {
 	r := chi.NewRouter()
