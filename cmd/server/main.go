@@ -21,7 +21,9 @@ func main() {
 	r.Get("/", mainPageMetricNameValue(memStorage))
 
 	r.Get("/value/{type}/{name}", handlers.UpdateHandler(memStorage))
-	http.HandleFunc("/update/", handlers.UpdateHandler(memStorage))
+
+	http.HandleFunc("/update/", handlers.UpdateHandlerPost(memStorage))
+
 	fmt.Printf("Starting server on port %s", PORT)
 	log.Fatal(http.ListenAndServe(PORT, r))
 }
