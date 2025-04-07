@@ -27,7 +27,7 @@ func main() {
 
 	fmt.Println("Starting server on port :8080")
 
-	log.Fatal(http.ListenAndServe(":8081", r))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 func mainPageMetricNameValue(storage *storage.MemStorage) http.HandlerFunc {
